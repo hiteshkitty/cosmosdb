@@ -12,7 +12,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Container(containerName = "producers", ru = "400")
+@Container(containerName = "producers", ru = "400", autoCreateContainer=false)
 public class Producer {
 
 	@Id

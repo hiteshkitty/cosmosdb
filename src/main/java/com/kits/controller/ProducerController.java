@@ -82,4 +82,42 @@ public class ProducerController {
 		producerService.deleteById(id, new PartitionKey(producer.getCorrelationId()));
 		return new ResponseEntity<String>("", HttpStatus.NO_CONTENT);
 	}
+
+	// GET the producer of a particular topicName
+	@GetMapping("/topicname/{topicName}")
+	public ResponseEntity<Producer> findByTopicName(@PathVariable String topicName) {
+		Producer producer = producerService.findByTopicName(topicName);
+		return new ResponseEntity<Producer>(producer, HttpStatus.OK);
+	}
+
+	// GET the count of Producers for a topicname
+	@GetMapping("/countbytopicname/{topicName}")
+	public ResponseEntity<Long> findCountByTopicName(@PathVariable String topicName) {
+		Long count = producerService.findCountByTopicName(topicName);
+		return new ResponseEntity<Long>(count, HttpStatus.OK);
+	}
+
+	// GET the producer of a particular correlationId and topicName
+	@GetMapping("/correlationid/{correlationId}/topicname/{topicName}")
+	public ResponseEntity<Producer> findByCorrelationIdAndTopicName(@PathVariable String correlationId,
+			@PathVariable String topicName) {
+		Producer producer = producerService.findByCorrelationIdAndTopicName(correlationId, topicName);
+		return new ResponseEntity<Producer>(producer, HttpStatus.OK);
+	}
+
+	// GET the producer of a particular correlationId and topicName
+	@GetMapping("/offset/{offset}/limit/{limit}")
+	public ResponseEntity<List<Producer>> getProducersWithOffsetLimit(@PathVariable int offset,
+			@PathVariable int limit) {
+		List<Producer> producerList = producerService.getProducersWithOffsetLimit(offset, limit);
+		return new ResponseEntity<List<Producer>>(producerList, HttpStatus.OK);
+	}
+
+	// GET the producer of a particular correlationId and topicName
+	@GetMapping("/numberofproducers/{topicName}")
+	public ResponseEntity<Long> getNumberOfProducersWithTopicName(@PathVariable String topicName) {
+		long count = producerService.getNumberOfProducersWithTopicName(topicName);
+		return new ResponseEntity<Long>(Long.valueOf(count), HttpStatus.OK);
+	}
+
 }
