@@ -23,8 +23,14 @@ import com.kits.dto.ProducerResponse;
 import com.kits.model.Producer;
 import com.kits.service.ProducerService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 @RestController
 @RequestMapping("/api/v1/producers")
+@Api(value="onlinestore", description="Operations pertaining to products in Online Store")
 public class ProducerController {
 
 	@Autowired
@@ -33,6 +39,13 @@ public class ProducerController {
 	Logger logger = LoggerFactory.getLogger(ProducerController.class);
 
 	// Add new Producer
+	@ApiOperation(value = "getGreeting", nickname = "getGreeting")
+	 @ApiResponses(value = {
+		        @ApiResponse(code = 500, message = "Server error"),
+		         @ApiResponse(code = 404, message = "Service not found"),
+		        @ApiResponse(code = 200, message = "Successful retrieval",
+		            response = ResponseEntity.class, responseContainer = "List") })
+
 	@PostMapping
 	public ResponseEntity<ProducerResponse> createNewProducer(@RequestBody Producer c) {
 
