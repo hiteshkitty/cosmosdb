@@ -7,17 +7,22 @@ import org.springframework.data.annotation.Id;
 import com.azure.spring.data.cosmos.core.mapping.Container;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Container(containerName = "producers", ru = "400", autoCreateContainer=false)
+@Container(containerName = "myproducers", ru = "400", autoCreateContainer=false)
+@ApiModel
 public class Producer {
 
 	@Id
+	@ApiModelProperty(position = 1, required = true, value = "A00001")
 	private String correlationId;
 	private String consumerAppId;
+	@ApiModelProperty(position = 3, required = true, value = "test-topic")
 	private String topicName;
 	private Integer partitionNumber;
 	private Integer offset;

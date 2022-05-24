@@ -25,12 +25,13 @@ import com.kits.service.ProducerService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 @RestController
 @RequestMapping("/api/v1/producers")
-@Api(value="onlinestore", description="Operations pertaining to products in Online Store")
+@Api(value="Producer APIs", tags="Operations pertaining to performing CRUD operations for a Producer" )
 public class ProducerController {
 
 	@Autowired
@@ -39,28 +40,28 @@ public class ProducerController {
 	Logger logger = LoggerFactory.getLogger(ProducerController.class);
 
 	// Add new Producer
-	@ApiOperation(value = "getGreeting", nickname = "getGreeting")
+	@ApiOperation(value = "Create a Producer", nickname = "createProducer")
 	 @ApiResponses(value = {
 		        @ApiResponse(code = 500, message = "Server error"),
-		         @ApiResponse(code = 404, message = "Service not found"),
-		        @ApiResponse(code = 200, message = "Successful retrieval",
-		            response = ResponseEntity.class, responseContainer = "List") })
-
+		         @ApiResponse(code = 404, message = "Producer not found"),
+		        @ApiResponse(code = 201, message = "Producer created successfully",
+					response = ResponseEntity.class, responseContainer = "ResponseEntity") })
 	@PostMapping
-	public ResponseEntity<ProducerResponse> createNewProducer(@RequestBody Producer c) {
+	public ResponseEntity<ProducerResponse> createNewProducer(@ApiParam(value = "Producer",
+	        required = true, defaultValue = "null") @RequestBody Producer producer) {
 
-		c = producerService.save(c);
+		producer = producerService.save(producer);
 		ProducerResponse producerResponse = new ProducerResponse();
-		producerResponse.setMessage("New producer created successfully with the ID: " + c.getCorrelationId());
-		producerResponse.setStatusCode("00");
+		producerResponse.setMessage("New producer created successfully with the ID: " + producer.getCorrelationId());
+		producerResponse.setStatusCode("200");
 		return new ResponseEntity<ProducerResponse>(producerResponse, HttpStatus.CREATED);
 	}
 
 	// Update existing Producer
 	@PutMapping("/{id}")
-	public ResponseEntity<String> updateExistingProducer(@PathVariable String id, @RequestBody Producer c) {
+	public ResponseEntity<String> updateExistingProducer(@PathVariable String id, @RequestBody Producer producer) {
 
-		producerService.save(c);
+		producerService.save(producer);
 		return new ResponseEntity<String>("", HttpStatus.NO_CONTENT);
 	}
 
@@ -77,6 +78,12 @@ public class ProducerController {
 	}
 
 	@GetMapping
+	@ApiOperation(value = "Get all producers", nickname = "getAllProducers")
+	 @ApiResponses(value = {
+		        @ApiResponse(code = 500, message = "Server error"),
+		         @ApiResponse(code = 404, message = "Producer not found"),
+		        @ApiResponse(code = 200, message = "Producers fetchted successfully",
+					response = ResponseEntity.class, responseContainer = "List") })
 	public ResponseEntity<List<Producer>> getAllProducers() {
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.add("ContentType", "application/json");
