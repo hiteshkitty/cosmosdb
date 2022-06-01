@@ -81,4 +81,22 @@ public class ProducerService {
 		return producerDBRepository.getNumberOfProducersWithTopicName(topicName);
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
+	public List<String> findAllDistinctTopicNames() {
+		return producerDBRepository.findAllDistinctTopicNames();
+	}
+
+	public long getProdcuerCountForDuration(TimeEnum time) {
+		int count = 0;
+		long timeValue = time.getValue();
+		System.out.println("timeValue : " + timeValue);
+//		timeValue = System.currentTimeMillis() - timeValue;
+//		System.out.println("new time: " + timeValue + " date: " + new Date(timeValue));
+		count =  producerDBRepository.getProdcuerCountForDuration(timeValue);
+		
+		return count;
+	}
 }

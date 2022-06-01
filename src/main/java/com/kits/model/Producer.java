@@ -27,8 +27,8 @@ public class Producer {
 	private Integer partitionNumber;
 	private Integer offset;
 	private String processorType;
-	@JsonFormat
-    (shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm")
+//	@JsonFormat
+//    (shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm")
 	private Date timeStamp;
 
 	public Producer() {

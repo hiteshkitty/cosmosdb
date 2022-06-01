@@ -28,4 +28,10 @@ public interface ProducerDBRepository extends CosmosRepository<Producer, String>
 	long getNumberOfProducersWithTopicName(@Param("topicName") String topicName);
 
 	Producer findByCorrelationIdAndTopicName(String correlationId, String topicName);
+
+	@Query("SELECT DISTINCT VALUE prod.topicName	FROM producers prod")
+	List<String> findAllDistinctTopicNames();
+
+	@Query("select value count(1) from c where c.timeStamp > (GetCurrentTimestamp() - @timeValue)")
+	int getProdcuerCountForDuration(long timeValue);
 }

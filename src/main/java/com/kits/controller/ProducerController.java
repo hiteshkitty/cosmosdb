@@ -22,6 +22,7 @@ import com.azure.cosmos.models.PartitionKey;
 import com.kits.dto.ProducerResponse;
 import com.kits.model.Producer;
 import com.kits.service.ProducerService;
+import com.kits.service.TimeEnum;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -31,7 +32,7 @@ import io.swagger.annotations.ApiResponses;
 
 @RestController
 @RequestMapping("/api/v1/producers")
-@Api(value="Producer APIs", tags="Operations pertaining to performing CRUD operations for a Producer" )
+@Api(value = "Producer APIs", tags = "Operations pertaining to performing CRUD operations for a Producer")
 public class ProducerController {
 
 	@Autowired
@@ -41,14 +42,12 @@ public class ProducerController {
 
 	// Add new Producer
 	@ApiOperation(value = "Create a Producer", nickname = "createProducer")
-	 @ApiResponses(value = {
-		        @ApiResponse(code = 500, message = "Server error"),
-		         @ApiResponse(code = 404, message = "Producer not found"),
-		        @ApiResponse(code = 201, message = "Producer created successfully",
-					response = ResponseEntity.class, responseContainer = "ResponseEntity") })
+	@ApiResponses(value = { @ApiResponse(code = 500, message = "Server error"),
+			@ApiResponse(code = 404, message = "Producer not found"),
+			@ApiResponse(code = 201, message = "Producer created successfully", response = ResponseEntity.class, responseContainer = "ResponseEntity") })
 	@PostMapping
-	public ResponseEntity<ProducerResponse> createNewProducer(@ApiParam(value = "Producer",
-	        required = true, defaultValue = "null") @RequestBody Producer producer) {
+	public ResponseEntity<ProducerResponse> createNewProducer(
+			@ApiParam(value = "Producer", required = true, defaultValue = "null") @RequestBody Producer producer) {
 
 		producer = producerService.save(producer);
 		ProducerResponse producerResponse = new ProducerResponse();
@@ -79,11 +78,9 @@ public class ProducerController {
 
 	@GetMapping
 	@ApiOperation(value = "Get all producers", nickname = "getAllProducers")
-	 @ApiResponses(value = {
-		        @ApiResponse(code = 500, message = "Server error"),
-		         @ApiResponse(code = 404, message = "Producer not found"),
-		        @ApiResponse(code = 200, message = "Producers fetchted successfully",
-					response = ResponseEntity.class, responseContainer = "List") })
+	@ApiResponses(value = { @ApiResponse(code = 500, message = "Server error"),
+			@ApiResponse(code = 404, message = "Producer not found"),
+			@ApiResponse(code = 200, message = "Producers fetchted successfully", response = ResponseEntity.class, responseContainer = "List") })
 	public ResponseEntity<List<Producer>> getAllProducers() {
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.add("ContentType", "application/json");
@@ -138,6 +135,19 @@ public class ProducerController {
 	public ResponseEntity<Long> getNumberOfProducersWithTopicName(@PathVariable String topicName) {
 		long count = producerService.getNumberOfProducersWithTopicName(topicName);
 		return new ResponseEntity<Long>(Long.valueOf(count), HttpStatus.OK);
+	}
+
+	@GetMapping("/countbytime/{time}")
+	public ResponseEntity<Long> getProdcuerCountForDuration(@PathVariable TimeEnum time) {
+		long count = producerService.getProdcuerCountForDuration(time);
+		return new ResponseEntity<Long>(Long.valueOf(count), HttpStatus.OK);
+	}
+	
+	// GET all distinct topicNames
+	@GetMapping("/getalltopicnames")
+	public ResponseEntity<List<String>> getAllTopicNames() {
+		List<String> topicNameList = producerService.findAllDistinctTopicNames();
+		return new ResponseEntity<List<String>>(topicNameList, HttpStatus.OK);
 	}
 
 }
