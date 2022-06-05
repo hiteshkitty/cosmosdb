@@ -1,9 +1,10 @@
 package com.kits.service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,25 +15,13 @@ import com.kits.repository.ProducerDBRepository;
 @Component
 public class ProducerService {
 
+	Logger LOGGER = LoggerFactory.getLogger(ProducerService.class);
+	
 	@Autowired
 	ProducerDBRepository producerDBRepository;
 
 	private List<Producer> producerList = new ArrayList<>();
 
-	public ProducerService() {
-//		Producer p1 = new Producer("A001", "AppId001", "test-topic1", 3, 45, "general", new Date());
-//		Producer p2 = new Producer("A002", "AppId002", "test-topic2", 3, 45, "general", new Date());
-//		Producer p3 = new Producer("A003", "AppId003", "test-topic3", 3, 45, "general", new Date());
-//		Producer p4 = new Producer("A004", "AppId004", "test-topic4", 3, 45, "general", new Date());
-//		Producer p5 = new Producer("A005", "AppId005", "test-topic5", 3, 45, "general", new Date());
-//
-//		producerList.add(p1);
-//		producerList.add(p2);
-//		producerList.add(p3);
-//		producerList.add(p4);
-//		producerList.add(p5);
-
-	}
 
 	public Producer save(Producer producer) {
 		producerDBRepository.save(producer);
@@ -40,15 +29,12 @@ public class ProducerService {
 	}
 
 	public Producer findById(String id) {
-//		Producer prod = producerList.stream().filter(producer -> id.equals(producer.getCorrelationId())).findAny()
-//				.orElse(null);
-//		System.out.println(prod);
-
 		Producer prod = producerDBRepository.findByCorrelationId(id);
 		return prod;
 	}
 
 	public List<Producer> getAllProducers() {
+		LOGGER.info("fetching all producers");
 		return producerDBRepository.getAllProducers();
 	}
 
@@ -78,6 +64,7 @@ public class ProducerService {
 	}
 
 	public long getNumberOfProducersWithTopicName(String topicName) {
+		LOGGER.debug("fetching number of prodcuers with topicName: " + topicName);
 		return producerDBRepository.getNumberOfProducersWithTopicName(topicName);
 	}
 
@@ -90,6 +77,7 @@ public class ProducerService {
 	}
 
 	public long getProdcuerCountForDuration(TimeEnum time) {
+		LOGGER.debug("fetching number of prodcuers for a duration: " + time.getValue());
 		int count = 0;
 		long timeValue = time.getValue();
 		System.out.println("timeValue : " + timeValue);

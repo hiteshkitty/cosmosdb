@@ -5,7 +5,6 @@ import java.util.Date;
 import org.springframework.data.annotation.Id;
 
 import com.azure.spring.data.cosmos.core.mapping.Container;
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -25,11 +24,11 @@ public class Producer {
 	@ApiModelProperty(position = 3, required = true, value = "test-topic")
 	private String topicName;
 	private Integer partitionNumber;
-	private Integer offset;
+	private Integer ofset;
 	private String processorType;
 //	@JsonFormat
 //    (shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm")
-	private Date timeStamp;
+	private Long timeStamp;
 
 	public Producer() {
 		// TODO Auto-generated constructor stub
@@ -37,13 +36,13 @@ public class Producer {
 
 	
 	public Producer(String correlationId, String consumerAppId, String topicName, Integer partitionNumber,
-			Integer offset, String processorType, Date timeStamp) {
+			Integer ofset, String processorType, Long timeStamp) {
 		super();
 		this.correlationId = correlationId;
 		this.consumerAppId = consumerAppId;
 		this.topicName = topicName;
 		this.partitionNumber = partitionNumber;
-		this.offset = offset;
+		this.ofset = ofset;
 		this.processorType = processorType;
 		this.timeStamp = timeStamp;
 	}
@@ -106,17 +105,17 @@ public class Producer {
 	}
 
 	/**
-	 * @return the offset
+	 * @return the ofset
 	 */
-	public Integer getOffset() {
-		return offset;
+	public Integer getOset() {
+		return ofset;
 	}
 
 	/**
-	 * @param offset the offset to set
+	 * @param ofset the ofset to set
 	 */
-	public void setOffset(Integer offset) {
-		this.offset = offset;
+	public void setOfset(Integer ofset) {
+		this.ofset = ofset;
 	}
 
 	/**
@@ -136,21 +135,21 @@ public class Producer {
 	/**
 	 * @return the timeStamp
 	 */
-	public Date getTimeStamp() {
+	public Long getTimeStamp() {
 		return timeStamp;
 	}
 
 	/**
 	 * @param timeStamp the timeStamp to set
 	 */
-	public void setTimeStamp(Date timeStamp) {
+	public void setTimeStamp(Long timeStamp) {
 		this.timeStamp = timeStamp;
 	}
 
 	@Override
 	public String toString() {
 		return "Producer [correlationId=" + correlationId + ", consumerAppId=" + consumerAppId + ", topicName="
-				+ topicName + ", partitionNumber=" + partitionNumber + ", offset=" + offset + ", processorType="
+				+ topicName + ", partitionNumber=" + partitionNumber + ", ofset=" + ofset + ", processorType="
 				+ processorType + ", timeStamp=" + timeStamp + "]";
 	}
 

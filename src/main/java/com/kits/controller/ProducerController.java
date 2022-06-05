@@ -35,10 +35,10 @@ import io.swagger.annotations.ApiResponses;
 @Api(value = "Producer APIs", tags = "Operations pertaining to performing CRUD operations for a Producer")
 public class ProducerController {
 
+	Logger LOGGER = LoggerFactory.getLogger(ProducerController.class);
+
 	@Autowired
 	private ProducerService producerService;
-
-	Logger logger = LoggerFactory.getLogger(ProducerController.class);
 
 	// Add new Producer
 	@ApiOperation(value = "Create a Producer", nickname = "createProducer")
@@ -86,7 +86,7 @@ public class ProducerController {
 		responseHeaders.add("ContentType", "application/json");
 		List<Producer> producerList = new ArrayList<>();
 
-		logger.info("Id is not present in the GET request");
+		LOGGER.info("Id is not present in the GET request");
 		producerList = producerService.getAllProducers();
 		return new ResponseEntity<List<Producer>>(producerList, responseHeaders, HttpStatus.OK);
 
@@ -142,12 +142,14 @@ public class ProducerController {
 		long count = producerService.getProdcuerCountForDuration(time);
 		return new ResponseEntity<Long>(Long.valueOf(count), HttpStatus.OK);
 	}
-	
+
 	// GET all distinct topicNames
 	@GetMapping("/getalltopicnames")
 	public ResponseEntity<List<String>> getAllTopicNames() {
 		List<String> topicNameList = producerService.findAllDistinctTopicNames();
 		return new ResponseEntity<List<String>>(topicNameList, HttpStatus.OK);
 	}
+	
+	
 
 }
