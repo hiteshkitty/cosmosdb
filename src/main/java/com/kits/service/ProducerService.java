@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.azure.cosmos.models.PartitionKey;
+import com.kits.dto.MessageCountResponse;
 import com.kits.model.Producer;
 import com.kits.repository.ProducerDBRepository;
 
@@ -87,4 +88,12 @@ public class ProducerService {
 		
 		return count;
 	}
+
+	public List<MessageCountResponse> getAllMessageCount(String topicName, String processorType) {
+		LOGGER.debug("fetching all message count for ${topicName} and ${processorType} " + topicName, processorType);
+		List<MessageCountResponse> list = new ArrayList<>();
+		list = producerDBRepository.getAllMessageCount(topicName, processorType);
+		return list;
+	}
+	
 }

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.azure.cosmos.models.PartitionKey;
+import com.kits.dto.MessageCountResponse;
 import com.kits.dto.ProducerResponse;
 import com.kits.model.Producer;
 import com.kits.service.ProducerService;
@@ -150,6 +151,12 @@ public class ProducerController {
 		return new ResponseEntity<List<String>>(topicNameList, HttpStatus.OK);
 	}
 	
+	// GET all distinct topicNames
+		@GetMapping("/getallmessagecount/topicname/{topicName}/processortype/{processorType}")
+		public ResponseEntity<List<MessageCountResponse>> getAllMessageCount(@PathVariable String topicName, @PathVariable String processorType) {
+			List<MessageCountResponse> messageCountResponseList = producerService.getAllMessageCount(topicName, processorType);
+			return new ResponseEntity<List<MessageCountResponse>>(messageCountResponseList, HttpStatus.OK);
+		}
 	
 
 }

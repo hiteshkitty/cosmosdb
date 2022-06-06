@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import com.azure.spring.data.cosmos.repository.CosmosRepository;
 import com.azure.spring.data.cosmos.repository.Query;
+import com.kits.dto.MessageCountResponse;
 import com.kits.model.Producer;
 
 @Repository
@@ -34,4 +35,11 @@ public interface ProducerDBRepository extends CosmosRepository<Producer, String>
 
 	@Query("select value count(1) from c where c.timeStamp > (GetCurrentTimestamp() - @timeValue)")
 	int getProdcuerCountForDuration(long timeValue);
+
+	@Query("select p.partitionNumber, min(p[\"offset\"]) as minOffset, max(p[\"offset\"]) as maxOffset, count(1) messages  \n"
+			+ "from   myproducers p \n"
+			+ "where  p.topicName = @topicName  and \n"
+			+ "              p.processingOrder = @processingOrder \n"
+			+ "group by p.partitionNumber")
+	List<MessageCountResponse> getAllMessageCount(String topicName, String processingOrder);
 }

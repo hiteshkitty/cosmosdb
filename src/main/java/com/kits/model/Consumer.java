@@ -11,9 +11,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Container(containerName = "myproducers", ru = "400", autoCreateContainer = false)
+@Container(containerName = "myconsumers", ru = "400", autoCreateContainer = true)
 @ApiModel
-public class Producer {
+public class Consumer {
 
 	@Id
 	@ApiModelProperty(position = 1, required = true, value = "A00001")
@@ -28,11 +28,11 @@ public class Producer {
 //    (shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm")
 	private Long timeStamp;
 
-	public Producer() {
+	public Consumer() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Producer(String correlationId, String consumerAppId, String topicName, Integer partitionNumber,
+	public Consumer(String correlationId, String consumerAppId, String topicName, Integer partitionNumber,
 			Integer offset, String processingOrder, Long timeStamp) {
 		super();
 		this.correlationId = correlationId;
