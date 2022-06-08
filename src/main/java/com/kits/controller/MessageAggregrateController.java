@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kits.dto.AggregrateResponse;
 import com.kits.service.AggregrateService;
+import com.kits.service.TimeEnum;
 
 import io.swagger.annotations.Api;
 
@@ -28,9 +29,15 @@ public class MessageAggregrateController {
 	private AggregrateService aggregrateService;
 
 	@GetMapping("/getmissedmessages/topicname/{topicName}")
-	public ResponseEntity<List<AggregrateResponse>> getAllMissedMessageCount(@PathVariable String topicName) {
-		List<AggregrateResponse> response = aggregrateService.getAllMissedMessageCount(topicName);
-		return new ResponseEntity<List<AggregrateResponse>>(response, HttpStatus.OK);
+	public ResponseEntity<AggregrateResponse> getAllMissedMessageCount(@PathVariable String topicName) {
+		AggregrateResponse response = aggregrateService.getAllMissedMessageCount(topicName);
+		return new ResponseEntity<AggregrateResponse>(response, HttpStatus.OK);
+	}
+	
+	@GetMapping("/getmissedmessages/topicname/{topicName}/time/{time}")
+	public ResponseEntity<AggregrateResponse> getAllMissedMessageCounts(@PathVariable String topicName, @PathVariable TimeEnum time) {
+		AggregrateResponse response = aggregrateService.getAllMissedMessageCountByTime(topicName,time);
+		return new ResponseEntity<AggregrateResponse>(response, HttpStatus.OK);
 	}
 
 }

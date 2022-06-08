@@ -25,10 +25,31 @@ public class ConsumerService {
 		return consumerDBRepository.getAllConsumers();
 	}
 
+	/**
+	 * 
+	 * @param topicName
+	 * @param processingOrder
+	 * @return
+	 */
 	public List<MessageCountResponse> getAllMessageCount(String topicName, String processingOrder) {
 		LOGGER.debug("fetching all message count for ${topicName} and ${processorType} " + topicName, processingOrder);
 		List<MessageCountResponse> list = new ArrayList<>();
 		list = consumerDBRepository.getAllMessageCount(topicName, processingOrder);
+		return list;
+	}
+
+	/**
+	 * 
+	 * @param topicName
+	 * @param processingOrder
+	 * @param time
+	 * @return
+	 */
+	public List<MessageCountResponse> getAllMessageCountByTime(String topicName, String processingOrder,
+			TimeEnum time) {
+		LOGGER.debug("fetching all message count for ${topicName} and ${processorType} for ${time} mins" + topicName, processingOrder, time);
+		List<MessageCountResponse> list = new ArrayList<>();
+		list = consumerDBRepository.getAllMessageCountByTime(topicName, processingOrder, time.getValue());
 		return list;
 	}
 

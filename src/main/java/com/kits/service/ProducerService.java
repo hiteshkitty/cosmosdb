@@ -88,6 +88,12 @@ public class ProducerService {
 		
 		return count;
 	}
+	/**
+	 * 
+	 * @param topicName
+	 * @param processorType
+	 * @return
+	 */
 
 	public List<MessageCountResponse> getAllMessageCount(String topicName, String processorType) {
 		LOGGER.debug("fetching all message count for ${topicName} and ${processorType} " + topicName, processorType);
@@ -95,5 +101,10 @@ public class ProducerService {
 		list = producerDBRepository.getAllMessageCount(topicName, processorType);
 		return list;
 	}
-	
-}
+
+	public List<MessageCountResponse> getAllMessageCountByTime(String topicName, String processorType, TimeEnum time) {
+		LOGGER.debug("fetching all message count for ${topicName} and ${processorType} and ${time}" + topicName, processorType, time);
+		List<MessageCountResponse> list = new ArrayList<>();
+		list = producerDBRepository.getAllMessageCountByTime(topicName, processorType, time.getValue());
+		return list;
+	}}
