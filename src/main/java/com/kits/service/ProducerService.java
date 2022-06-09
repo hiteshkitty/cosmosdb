@@ -17,12 +17,11 @@ import com.kits.repository.ProducerDBRepository;
 public class ProducerService {
 
 	Logger LOGGER = LoggerFactory.getLogger(ProducerService.class);
-	
+
 	@Autowired
 	ProducerDBRepository producerDBRepository;
 
 	private List<Producer> producerList = new ArrayList<>();
-
 
 	public Producer save(Producer producer) {
 		producerDBRepository.save(producer);
@@ -84,10 +83,11 @@ public class ProducerService {
 		System.out.println("timeValue : " + timeValue);
 //		timeValue = System.currentTimeMillis() - timeValue;
 //		System.out.println("new time: " + timeValue + " date: " + new Date(timeValue));
-		count =  producerDBRepository.getProdcuerCountForDuration(timeValue);
-		
+		count = producerDBRepository.getProdcuerCountForDuration(timeValue);
+
 		return count;
 	}
+
 	/**
 	 * 
 	 * @param topicName
@@ -102,9 +102,35 @@ public class ProducerService {
 		return list;
 	}
 
+	/**
+	 * 
+	 * @param topicName
+	 * @param processorType
+	 * @param time
+	 * @return
+	 */
 	public List<MessageCountResponse> getAllMessageCountByTime(String topicName, String processorType, TimeEnum time) {
-		LOGGER.debug("fetching all message count for ${topicName} and ${processorType} and ${time}" + topicName, processorType, time);
+		LOGGER.debug("fetching all message count for ${topicName} and ${processorType} and ${time}" + topicName,
+				processorType, time);
 		List<MessageCountResponse> list = new ArrayList<>();
 		list = producerDBRepository.getAllMessageCountByTime(topicName, processorType, time.getValue());
 		return list;
-	}}
+	}
+
+	/**
+	 * 
+	 * @param topicName
+	 * @param processingOrder
+	 * @param startTime
+	 * @param endTime
+	 * @return
+	 */
+	public List<MessageCountResponse> getAllMessageCountWithTime(String topicName, String processingOrder,
+			Long startTime, Long endTime) {
+		LOGGER.debug("fetching all message count for ${topicName} and ${processorType} and ${startTime} and ${endTime}" + topicName,
+				processingOrder, startTime, endTime);
+		List<MessageCountResponse> list = new ArrayList<>();
+		list = producerDBRepository.getAllMessageCountWithTime(topicName, processingOrder, startTime, endTime);
+		return list;
+	}
+}

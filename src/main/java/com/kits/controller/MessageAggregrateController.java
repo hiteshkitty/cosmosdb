@@ -1,7 +1,5 @@
 package com.kits.controller;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,4 +38,9 @@ public class MessageAggregrateController {
 		return new ResponseEntity<AggregrateResponse>(response, HttpStatus.OK);
 	}
 
+	@GetMapping("/getmissedmessages/topicname/{topicName}/starttime/{startTime}/endtime/{endTime}")
+	public ResponseEntity<AggregrateResponse> getAllMissedMessageCountsWithTime(@PathVariable String topicName, @PathVariable String startTime, @PathVariable String endTime) {
+		AggregrateResponse response = aggregrateService.getAllMissedMessageCountsWithTime(topicName, Long.valueOf(startTime), Long.valueOf(endTime));
+		return new ResponseEntity<AggregrateResponse>(response, HttpStatus.OK);
+	}
 }

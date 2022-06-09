@@ -49,4 +49,14 @@ public interface ProducerDBRepository extends CosmosRepository<Producer, String>
 			+ "              p.processingOrder = @processingOrder  and p.timeStamp > (GetCurrentTimestamp() - @timeValue) \n"
 			+ "group by p.partitionNumber")
 	List<MessageCountResponse> getAllMessageCountByTime(String topicName, String processingOrder, int timeValue);
+
+	@Query("select p.partitionNumber, min(p[\"offset\"]) as minOffset, max(p[\"offset\"]) as maxOffset, count(1) messages   \n"
+			+ "from   myproducers p  \n"
+			+ "where  p.topicName = @topicName  and  \n"
+			+ "p.processingOrder = @processingOrder and   \n"
+			+ "p.timeStamp >=  @startTime and  \n"
+			+ "p.timeStamp <= @endTime    \n"
+			+ "group by p.partitionNumber ")
+	List<MessageCountResponse> getAllMessageCountWithTime(String topicName, String processingOrder, Long startTime,
+			Long endTime);
 }
