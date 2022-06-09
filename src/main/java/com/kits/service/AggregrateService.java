@@ -31,27 +31,24 @@ public class AggregrateService {
 		LOGGER.debug("fetching all message count for ${topicName} " + topicName);
 
 		List<MessageCountResponse> producerMessages = producerService.getAllMessageCount(topicName, processingOrder);
+		
+		
 
-		List<MessageCountResponse> consumedMessages = consumerService.getAllMessageCount(topicName, processingOrder);
+		List<MessageCountResponse> consumedMessages = null;//consumerService.getAllMessageCount(topicName, processingOrder);
 
 		processingOrder = "retry";
-		List<MessageCountResponse> retyMessages = consumerService.getAllMessageCount(topicName, processingOrder);
+		List<MessageCountResponse> retyMessages = null;//consumerService.getAllMessageCount(topicName, processingOrder);
 
 		processingOrder = "dead-letter";
-		List<MessageCountResponse> deadLetterMessages = consumerService.getAllMessageCount(topicName, processingOrder);
+		List<MessageCountResponse> deadLetterMessages = null;//consumerService.getAllMessageCount(topicName, processingOrder);
 
-		System.out.println("Producer Messages ");
-		System.out.println(producerMessages);
-		System.out.println("*********************************************************************");
-		System.out.println("Consumer Messages ");
-		System.out.println(consumedMessages);
-		System.out.println("retyMessages Messages ");
-		System.out.println(retyMessages);
-		System.out.println("deadLetterMessages Messages ");
-		System.out.println(deadLetterMessages);
-
-		response = createResponse(topicName, producerMessages, consumedMessages, retyMessages, deadLetterMessages);
-
+		for (MessageCountResponse producerMessage : producerMessages) {
+			consumedMessages = consumerService.getAllMessageCountByTimeWithOffset(topicName, "MAIN", producerMessage.getPartitionNumber(), producerMessage.getMinOffset(), producerMessage.getMaxOffset());
+			retyMessages = consumerService.getAllMessageCountByTimeWithOffset(topicName, "retry", producerMessage.getPartitionNumber(), producerMessage.getMinOffset(), producerMessage.getMaxOffset());
+			deadLetterMessages = consumerService.getAllMessageCountByTimeWithOffset(topicName, "dead-letter", producerMessage.getPartitionNumber(), producerMessage.getMinOffset(), producerMessage.getMaxOffset());
+			response = createResponse(response, topicName, producerMessages, consumedMessages, retyMessages, deadLetterMessages);
+		}
+		
 		return response;
 	}
 	
@@ -63,6 +60,11 @@ public class AggregrateService {
 		LOGGER.debug("fetching all message count for ${topicName} for last ${time} mins" + topicName, time);
 
 		List<MessageCountResponse> producerMessages = producerService.getAllMessageCountByTime(topicName, processingOrder, time);
+		
+//		for (MessageCountResponse producerMessage : producerMessages) {
+//			consumedMessages = consumerService.getAllMessageCountByTimeWithOffset(topicName, processingOrder, producerMessage.getPartitionNumber(), producerMessage.getMinOffset(), producerMessage.getMaxOffset());
+//		}
+		
 
 		List<MessageCountResponse> consumedMessages = consumerService.getAllMessageCountByTime(topicName, processingOrder, time);
 
@@ -72,47 +74,34 @@ public class AggregrateService {
 		processingOrder = "dead-letter";
 		List<MessageCountResponse> deadLetterMessages = consumerService.getAllMessageCountByTime(topicName, processingOrder, time);
 
-//		System.out.println("Producer Messages ");
-//		System.out.println(producerMessages);
-//		System.out.println("*********************************************************************");
-//		System.out.println("Consumer Messages ");
-//		System.out.println(consumedMessages);
-//		System.out.println("retyMessages Messages ");
-//		System.out.println(retyMessages);
-//		System.out.println("deadLetterMessages Messages ");
-//		System.out.println(deadLetterMessages);
-
-		response = createResponse(topicName, producerMessages, consumedMessages, retyMessages, deadLetterMessages);
+		response = createResponse(response, topicName, producerMessages, consumedMessages, retyMessages, deadLetterMessages);
 
 		return response;
 	}
 	
 
-	private AggregrateResponse createResponse(String topicName, List<MessageCountResponse> producerMessageList,
+	private AggregrateResponse createResponse(AggregrateResponse response, String topicName, List<MessageCountResponse> producerMessageList,
 			List<MessageCountResponse> consumedMessageMainList, List<MessageCountResponse> consumerMessageRetryList,
 			List<MessageCountResponse> consumerMessageDeadLetterList) {
-		AggregrateResponse response = new AggregrateResponse();
 		int totalProducedMessages = 0;
 		for (MessageCountResponse producerMessage : producerMessageList) {
-			response = new AggregrateResponse();
 			for (MessageCountResponse consumedMessage : consumedMessageMainList) {
 				if (producerMessage.getPartitionNumber() == consumedMessage.getPartitionNumber()) {
 					response.setTopicName(topicName);
-					response.setProduced(producerMessage.getMessages());
-					response.setConsumed(consumedMessage.getMessages());
-					totalProducedMessages = producerMessage.getMessages();
+					response.setProduced(response.getProduced() + producerMessage.getMessages());
+					response.setConsumed(response.getConsumed() + consumedMessage.getMessages());
 					break;
 				}
 			}
 			for (MessageCountResponse retryMessage : consumerMessageRetryList) {
 				if (producerMessage.getPartitionNumber() == retryMessage.getPartitionNumber()) {
-					response.setRetries(retryMessage.getMessages());
+					response.setRetries(response.getRetries() + retryMessage.getMessages());
 					break;
 				}
 			}
 			for (MessageCountResponse deadLetterMessage : consumerMessageDeadLetterList) {
 				if (producerMessage.getPartitionNumber() == deadLetterMessage.getPartitionNumber()) {
-					response.setDeadLetter(deadLetterMessage.getMessages());
+					response.setDeadLetter(response.getDeadLetter() + deadLetterMessage.getMessages());
 					break;
 				}
 			}

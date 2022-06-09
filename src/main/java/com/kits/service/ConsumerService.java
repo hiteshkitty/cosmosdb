@@ -38,6 +38,14 @@ public class ConsumerService {
 		return list;
 	}
 
+	
+	public List<MessageCountResponse> getAllMessageCountByTimeWithOffset(String topicName, String processingOrder,int partitionNumber, int startOffset, int endOffset) {
+		LOGGER.debug("fetching all message count for ${topicName} and ${processorType} and ${partitionNumber} and ${startOffset} and ${endOffset}  " + topicName, processingOrder,partitionNumber, startOffset, endOffset);
+		List<MessageCountResponse> list = new ArrayList<>();
+		list = consumerDBRepository.getAllMessageCountByTimeWithOffset(topicName, processingOrder, partitionNumber, startOffset, endOffset);
+		return list;
+	}
+	
 	/**
 	 * 
 	 * @param topicName

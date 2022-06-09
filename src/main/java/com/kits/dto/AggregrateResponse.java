@@ -6,11 +6,11 @@ public class AggregrateResponse {
 	private Long startTime;
 	private Long endTime;
 
-	private Integer produced;
-	private Integer consumed;
-	private Integer retries;
-	private Integer deadLetter;
-	private Integer unconsumed;
+	private Integer produced = Integer.valueOf(0);
+	private Integer consumed = Integer.valueOf(0);
+	private Integer retries = Integer.valueOf(0);
+	private Integer deadLetter = Integer.valueOf(0);
+	private Integer unconsumed = Integer.valueOf(0);
 
 	/**
 	 * @return the topicName
