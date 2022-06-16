@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kits.dto.AggregateResponse;
-import com.kits.dto.AggregrateResponse;
-import com.kits.dto.ApiResponse;
 import com.kits.service.AggregrateService;
 
 import io.swagger.annotations.Api;
@@ -27,21 +25,12 @@ public class MessageAggregrateController {
 	@Autowired
 	private AggregrateService aggregrateService;
 
-	@GetMapping("/getmissedmessages/topicname/{topicName}")
-	public ResponseEntity<AggregrateResponse> getAllMissedMessageCount(@PathVariable String topicName) {
-		AggregrateResponse response = aggregrateService.getAllMissedMessageCount(topicName);
-		return new ResponseEntity<AggregrateResponse>(response, HttpStatus.OK);
-	}
-	
-//	@GetMapping("/getmissedmessages/topicname/{topicName}/time/{time}")
-//	public ResponseEntity<AggregrateResponse> getAllMissedMessageCounts(@PathVariable String topicName, @PathVariable TimeEnum time) {
-//		AggregrateResponse response = aggregrateService.getAllMissedMessageCountByTime(topicName,time);
-//		return new ResponseEntity<AggregrateResponse>(response, HttpStatus.OK);
-//	}
-
 	@GetMapping("/getmissedmessages/topicname/{topicName}/starttime/{startTime}/endtime/{endTime}")
-	public ResponseEntity<AggregateResponse> getAllMissedMessageCountsWithTime(@PathVariable String topicName, @PathVariable String startTime, @PathVariable String endTime) {
-		AggregateResponse response = aggregrateService.getMissedMessagesWithLatestTime(topicName, Long.valueOf(startTime), Long.valueOf(endTime));
+	public ResponseEntity<AggregateResponse> getAllMissedMessageCountsWithTime(@PathVariable String topicName,
+			@PathVariable String startTime, @PathVariable String endTime) {
+		AggregateResponse response = aggregrateService.getMissedMessagesWithLatestTime(topicName,
+				Long.valueOf(startTime), Long.valueOf(endTime));
 		return new ResponseEntity<AggregateResponse>(response, HttpStatus.OK);
 	}
+
 }

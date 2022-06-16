@@ -10,4 +10,5 @@ public class MessageCountResponse {
     private int maxOffset;
     private int messages;
     private String consumerAppId;
+    private String processingOrder;
 }

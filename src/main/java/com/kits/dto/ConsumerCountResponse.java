@@ -7,5 +7,6 @@ public class ConsumerCountResponse {
 
 	private String consumerAppId;
 	private int messages;
-	
+	private int partitionNumber;
+	private String processingOrder;
 }
