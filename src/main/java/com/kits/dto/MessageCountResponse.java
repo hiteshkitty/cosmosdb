@@ -1,21 +1,13 @@
 package com.kits.dto;
 
-import java.io.Serializable;
 
 import lombok.Data;
 
-/**
- * 
- * @author hitessha
- *
- */
 @Data
-public class MessageCountResponse implements Serializable {
-
-	private String consumerAppId;
-	private Integer partitionNumber;
-	private Integer minOffset;
-	private Integer maxOffset;
-	private Integer messages;
-
+public class MessageCountResponse {
+    private int partitionNumber;
+    private int minOffset;
+    private int maxOffset;
+    private int messages;
+    private String consumerAppId;
 }

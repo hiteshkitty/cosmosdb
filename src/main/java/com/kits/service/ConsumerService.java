@@ -50,7 +50,7 @@ public class ConsumerService {
 	public List<ConsumerCountResponse> getAllMessageCountByTimeWithOffsetLatest(String topicName, String processingOrder,int partitionNumber, int startOffset, int endOffset) {
 		LOGGER.debug("fetching all message count for ${topicName} and ${processorType} and ${partitionNumber} and ${startOffset} and ${endOffset}  " + topicName, processingOrder,partitionNumber, startOffset, endOffset);
 		List<ConsumerCountResponse> list = new ArrayList<>();
-		list = consumerDBRepository.getAllMessageCountByTimeWithOffsetAppId(topicName, processingOrder, partitionNumber, startOffset, endOffset);
+		list = consumerDBRepository.getAllMessageCountByTimeWithOffsetAppId1(topicName, processingOrder, partitionNumber, startOffset, endOffset);
 		return list;
 	}
 	
@@ -68,5 +68,14 @@ public class ConsumerService {
 		list = consumerDBRepository.getAllMessageCountByTime(topicName, processingOrder, time.getValue());
 		return list;
 	}
+
+	public List<MessageCountResponse> getAllMessageCountWithOffset(String topicName, String processingOrder, int partitionNumber,
+			int startOffset, int endOffset) {
+		LOGGER.debug("fetching all message count for ${topicName} and ${processorType} and ${partitionNumber} and ${startOffset} and ${endOffset}  " + topicName, processingOrder,partitionNumber, startOffset, endOffset);
+		List<MessageCountResponse> list = new ArrayList<>();
+		list = consumerDBRepository.getAllMessageCountByTimeWithOffsetAppId(topicName, processingOrder, partitionNumber, startOffset, endOffset);
+		return list;
+	}
+
 
 }

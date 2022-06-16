@@ -150,4 +150,13 @@ public class ProducerService {
 		list = producerDBRepository.getAllMessageCountWithTimeAppId(topicName, processingOrder, startTime, endTime);
 		return list;
 	}
+
+	public List<MessageCountResponse> getProducerMessagesWithTime(String topicName, String processingOrder,
+			Long startTime, Long endTime) {
+		LOGGER.debug("fetching all message count for ${topicName} and ${processorType} and ${startTime} and ${endTime}" + topicName,
+				processingOrder, startTime, endTime);
+		List<MessageCountResponse> list = new ArrayList<>();
+		list = producerDBRepository.getAllMessageCountWithTimeAppId(topicName, processingOrder, startTime, endTime);
+		return list;
+	}
 }

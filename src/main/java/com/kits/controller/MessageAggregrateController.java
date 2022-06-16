@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.kits.dto.AggregateResponse;
 import com.kits.dto.AggregrateResponse;
 import com.kits.dto.ApiResponse;
 import com.kits.service.AggregrateService;
-import com.kits.service.TimeEnum;
 
 import io.swagger.annotations.Api;
 
@@ -33,15 +33,15 @@ public class MessageAggregrateController {
 		return new ResponseEntity<AggregrateResponse>(response, HttpStatus.OK);
 	}
 	
-	@GetMapping("/getmissedmessages/topicname/{topicName}/time/{time}")
-	public ResponseEntity<AggregrateResponse> getAllMissedMessageCounts(@PathVariable String topicName, @PathVariable TimeEnum time) {
-		AggregrateResponse response = aggregrateService.getAllMissedMessageCountByTime(topicName,time);
-		return new ResponseEntity<AggregrateResponse>(response, HttpStatus.OK);
-	}
+//	@GetMapping("/getmissedmessages/topicname/{topicName}/time/{time}")
+//	public ResponseEntity<AggregrateResponse> getAllMissedMessageCounts(@PathVariable String topicName, @PathVariable TimeEnum time) {
+//		AggregrateResponse response = aggregrateService.getAllMissedMessageCountByTime(topicName,time);
+//		return new ResponseEntity<AggregrateResponse>(response, HttpStatus.OK);
+//	}
 
 	@GetMapping("/getmissedmessages/topicname/{topicName}/starttime/{startTime}/endtime/{endTime}")
-	public ResponseEntity<ApiResponse> getAllMissedMessageCountsWithTime(@PathVariable String topicName, @PathVariable String startTime, @PathVariable String endTime) {
-		ApiResponse response = aggregrateService.getAllMissedMessageCountsWithTime(topicName, Long.valueOf(startTime), Long.valueOf(endTime));
-		return new ResponseEntity<ApiResponse>(response, HttpStatus.OK);
+	public ResponseEntity<AggregateResponse> getAllMissedMessageCountsWithTime(@PathVariable String topicName, @PathVariable String startTime, @PathVariable String endTime) {
+		AggregateResponse response = aggregrateService.getMissedMessagesWithLatestTime(topicName, Long.valueOf(startTime), Long.valueOf(endTime));
+		return new ResponseEntity<AggregateResponse>(response, HttpStatus.OK);
 	}
 }

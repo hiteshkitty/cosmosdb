@@ -43,6 +43,15 @@ public interface ConsumerDBRepository extends CosmosRepository<Consumer, String>
             "              consumer.partitionNumber = @partitionNumber and consumer[\"offset\"] >=  @minOffset and consumer[\"offset\"] <= @maxOffset\n" +
             "group by consumer.consumerAppId\n"
 )
-	List<ConsumerCountResponse> getAllMessageCountByTimeWithOffsetAppId(String topicName, String processingOrder, int partitionNumber, int minOffset, int maxOffset);
+	List<ConsumerCountResponse> getAllMessageCountByTimeWithOffsetAppId1(String topicName, String processingOrder, int partitionNumber, int minOffset, int maxOffset);
+	
+	@Query("select consumer.consumerAppId,  count(1) messages  \n" +
+            "from   consumers consumer \n" +
+            "where  consumer.topicName = @topicName  and \n" +
+            "              consumer.processingOrder = @processingOrder and\n" +
+            "              consumer.partitionNumber = @partitionNumber and consumer[\"offset\"] >=  @minOffset and consumer[\"offset\"] <= @maxOffset\n" +
+            "group by consumer.consumerAppId\n"
+)
+	List<MessageCountResponse> getAllMessageCountByTimeWithOffsetAppId(String topicName, String processingOrder, int partitionNumber, int minOffset, int maxOffset);
 	
 }
