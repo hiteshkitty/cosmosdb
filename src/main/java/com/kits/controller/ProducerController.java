@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.azure.cosmos.models.PartitionKey;
 import com.kits.dto.MessageCountResponse;
-import com.kits.dto.ProducerResponse;
+import com.kits.dto.ProducerData;
 import com.kits.model.Producer;
 import com.kits.service.ProducerService;
 import com.kits.service.TimeEnum;
@@ -47,14 +47,15 @@ public class ProducerController {
 			@ApiResponse(code = 404, message = "Producer not found"),
 			@ApiResponse(code = 201, message = "Producer created successfully", response = ResponseEntity.class, responseContainer = "ResponseEntity") })
 	@PostMapping
-	public ResponseEntity<ProducerResponse> createNewProducer(
+	public ResponseEntity<ProducerData> createNewProducer(
 			@ApiParam(value = "Producer", required = true, defaultValue = "null") @RequestBody Producer producer) {
 
 		producer = producerService.save(producer);
-		ProducerResponse producerResponse = new ProducerResponse();
-		producerResponse.setMessage("New producer created successfully with the ID: " + producer.getCorrelationId());
-		producerResponse.setStatusCode("200");
-		return new ResponseEntity<ProducerResponse>(producerResponse, HttpStatus.CREATED);
+//		ProducerData producerResponse = new ProducerData();
+//		producerResponse.setMessage("New producer created successfully with the ID: " + producer.getCorrelationId());
+//		producerResponse.setStatusCode("200");
+//		return new ResponseEntity<ProducerData>(producerResponse, HttpStatus.CREATED);
+		return null;
 	}
 
 	// Update existing Producer

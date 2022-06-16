@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.kits.dto.ConsumerCountResponse;
 import com.kits.dto.MessageCountResponse;
 import com.kits.model.Consumer;
 import com.kits.repository.ConsumerDBRepository;
@@ -43,6 +44,13 @@ public class ConsumerService {
 		LOGGER.debug("fetching all message count for ${topicName} and ${processorType} and ${partitionNumber} and ${startOffset} and ${endOffset}  " + topicName, processingOrder,partitionNumber, startOffset, endOffset);
 		List<MessageCountResponse> list = new ArrayList<>();
 		list = consumerDBRepository.getAllMessageCountByTimeWithOffset(topicName, processingOrder, partitionNumber, startOffset, endOffset);
+		return list;
+	}
+	
+	public List<ConsumerCountResponse> getAllMessageCountByTimeWithOffsetLatest(String topicName, String processingOrder,int partitionNumber, int startOffset, int endOffset) {
+		LOGGER.debug("fetching all message count for ${topicName} and ${processorType} and ${partitionNumber} and ${startOffset} and ${endOffset}  " + topicName, processingOrder,partitionNumber, startOffset, endOffset);
+		List<ConsumerCountResponse> list = new ArrayList<>();
+		list = consumerDBRepository.getAllMessageCountByTimeWithOffsetAppId(topicName, processingOrder, partitionNumber, startOffset, endOffset);
 		return list;
 	}
 	

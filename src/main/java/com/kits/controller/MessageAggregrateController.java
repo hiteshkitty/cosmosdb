@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kits.dto.AggregrateResponse;
+import com.kits.dto.ApiResponse;
 import com.kits.service.AggregrateService;
 import com.kits.service.TimeEnum;
 
@@ -39,8 +40,8 @@ public class MessageAggregrateController {
 	}
 
 	@GetMapping("/getmissedmessages/topicname/{topicName}/starttime/{startTime}/endtime/{endTime}")
-	public ResponseEntity<AggregrateResponse> getAllMissedMessageCountsWithTime(@PathVariable String topicName, @PathVariable String startTime, @PathVariable String endTime) {
-		AggregrateResponse response = aggregrateService.getAllMissedMessageCountsWithTime(topicName, Long.valueOf(startTime), Long.valueOf(endTime));
-		return new ResponseEntity<AggregrateResponse>(response, HttpStatus.OK);
+	public ResponseEntity<ApiResponse> getAllMissedMessageCountsWithTime(@PathVariable String topicName, @PathVariable String startTime, @PathVariable String endTime) {
+		ApiResponse response = aggregrateService.getAllMissedMessageCountsWithTime(topicName, Long.valueOf(startTime), Long.valueOf(endTime));
+		return new ResponseEntity<ApiResponse>(response, HttpStatus.OK);
 	}
 }
