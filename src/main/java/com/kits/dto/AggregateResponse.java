@@ -8,6 +8,7 @@ import java.util.List;
 public class AggregateResponse {
     private AggregateCountResponse count;
     private List<AggregateConsumerResponse> consumer;
+    private int pendingMessages;
 }
 
 

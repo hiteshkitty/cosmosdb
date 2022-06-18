@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.kits.controller.MessageAggregrateController;
 import com.kits.dto.AggregateConsumerResponse;
 import com.kits.dto.AggregateCountResponse;
 import com.kits.dto.AggregateProducerResponse;
@@ -52,8 +53,6 @@ public class AggregrateService {
 				endTime);
 		System.out.println("This is Producer List ::" + producerMessageList);
 
-		List<List<ConsumerCountResponse>> list = new ArrayList<>();
-		
 		for (MessageCountResponse producerMessage : producerMessageList) {
 			consumedMessageMainListTemp = consumerService.getAllMessageCountWithOffset(topicName, "MAIN",
 					producerMessage.getPartitionNumber(), producerMessage.getMinOffset(),
@@ -79,17 +78,17 @@ public class AggregrateService {
 				res.setProcessingOrder("dead-letter");
 			}
 			
-//			LOGGER.debug("consumedMessageMainList: " + consumedMessageMainListTemp);
-//			LOGGER.debug("consumerMessageRetryList: " + consumerMessageRetryListTemp);
-//			LOGGER.debug("consumerMessageDeadLetterList: " + consumerMessageDeadLetterListTemp);
+			LOGGER.debug("consumedMessageMainList: " + consumedMessageMainListTemp.size());
+			LOGGER.debug("consumerMessageRetryList: " + consumerMessageRetryListTemp.size());
+			LOGGER.debug("consumerMessageDeadLetterList: " + consumerMessageDeadLetterListTemp.size());
 			consumedMessageMainList.addAll(consumedMessageMainListTemp);
 			consumerMessageRetryList.addAll(consumerMessageRetryListTemp);
 			consumerMessageDeadLetterList.addAll(consumerMessageDeadLetterListTemp);
 
 		}
-		LOGGER.debug("FinalConsumedMessageMainList: " + consumedMessageMainList);
-		LOGGER.debug("FinalConsumerMessageRetryList: " + consumerMessageRetryList);
-		LOGGER.debug("FinalConsumerMessageDeadLetterList: " + consumerMessageDeadLetterList);
+		LOGGER.debug("FinalConsumedMessageMainList: " + consumedMessageMainList.size());
+		LOGGER.debug("FinalConsumerMessageRetryList: " + consumerMessageRetryList.size());
+		LOGGER.debug("FinalConsumerMessageDeadLetterList: " + consumerMessageDeadLetterList.size());
 
 		response = createAggregateResponse(topicName, producerMessageList, consumedMessageMainList,
 				consumerMessageRetryList, consumerMessageDeadLetterList, startTime, endTime);
@@ -108,8 +107,6 @@ public class AggregrateService {
 		count.setProducer(producer);
 		response.setConsumer(list);
 		response.setCount(count);
-
-		int totalProducedMessages = 0;
 
 		Map<String, AggregateConsumerResponse> map = new HashMap<>();
 
@@ -171,6 +168,22 @@ public class AggregrateService {
             
             list.add(res);
 		}
+		
+		LOGGER.debug("total messages produced: " + response.getCount().getProducer().getProduced());
+	
+		int consumedMessages = 0;
+
+		List<AggregateConsumerResponse> consumerList = response.getConsumer();
+		
+		for(AggregateConsumerResponse consumer : consumerList) {
+		
+			consumedMessages += (consumer.getConsumed() + consumer.getDeadLetter());
+		}
+		int pendingMessages = response.getCount().getProducer().getProduced()- consumedMessages;
+		
+		response.setPendingMessages(pendingMessages);
+		
+		LOGGER.debug("total messages pending: " + pendingMessages);		
 		return response;
 	}
 
