@@ -1,4 +1,4 @@
-package com.kits.dto;
+package com.kits.cosmos.dto;
 
 public enum ProcessingOrderEnum {
 
