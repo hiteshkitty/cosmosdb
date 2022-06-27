@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 import com.azure.spring.data.cosmos.repository.CosmosRepository;
 import com.azure.spring.data.cosmos.repository.Query;
 import com.kits.cosmos.dto.MessageCountResponse;
+import com.kits.cosmos.dto.MessageProcessed;
+import com.kits.cosmos.dto.PendingTopicDetails;
 import com.kits.model.Consumer;
 
 @Repository
@@ -19,5 +21,19 @@ public interface ConsumerDBRepository extends CosmosRepository<Consumer, String>
 			+ "group by consumer.consumerAppId\n")
 	List<MessageCountResponse> getAllMessageCountByTimeWithOffsetAppId(String topicName, String processingOrder,
 			int partitionNumber, int minOffset, int maxOffset);
+
+	@Query("SELECT c.consumerAppId, c.topicName, c.partitionNumber, c.processingOrder, c[\"offset\"] FROM c where c.topicName =  @topicName and c.processingOrder = @processingOrder\n"
+			+ "and (c[\"offset\"] > @minOffset and c[\"offset\"] < @maxOffset)")
+	List<PendingTopicDetails> getPendingTopicDetails(String topicName, String processingOrder, int minOffset,
+			int maxOffset);
+
+	@Query("select c[\"offset\"], c.partitionNumber from myconsumers c\n"
+			+ "where c.topicName = @topicName\n"
+			+ "and c.processingOrder in (\"dead-letter\", \"MAIN\")\n"
+			+ "and c.partitionNumber = @partitionNumber \n"
+			+ "and c[\"offset\"] >=  @minOffset  \n"
+			+ "and c[\"offset\"] <= @maxOffset \n"
+			+ " order by c.partitionNumber")
+	List<MessageProcessed> getAllOffsetProcessed(String topicName, int partitionNumber, int minOffset, int maxOffset);
 
 }

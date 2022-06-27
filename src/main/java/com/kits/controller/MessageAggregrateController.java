@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -75,7 +76,23 @@ public class MessageAggregrateController {
 		return new ResponseEntity<ProducerResponse>(producerResponse, responseHeaders, HttpStatus.OK);
 
 	}
+	
+	@PostMapping("/getpendingmessages/topicname/{topicName}")
+	public ResponseEntity<Map<Integer, List<Integer>> > getAllPendingMessages(@PathVariable String topicName,
+			@RequestBody DateRangeRequest request) throws ParseException {
+		try {
+			validateDateRangeRequest(request);
+		} catch (Exception ex) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		}
 
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+		Long startTime = sdf.parse(request.getStartDate() + " " + request.getStartTime()).getTime();
+		Long endTime = sdf.parse(request.getEndDate() + " " + request.getEndTime()).getTime();
+
+		Map<Integer, List<Integer>>  response = aggregrateService.getAllPendingMessages(topicName, startTime, endTime);
+		return new ResponseEntity<Map<Integer, List<Integer>> >(response, HttpStatus.OK);
+	}
 	private void validateDateRangeRequest(DateRangeRequest request) throws Exception {
 
 		try {

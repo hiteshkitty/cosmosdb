@@ -8,4 +8,7 @@ public class PendingTopicDetails {
 
 	private int offset;
 	private int partitionNumber;
+	private String topicName;
+	private String consumerAppId;
+	private String processingOrder;
 }
