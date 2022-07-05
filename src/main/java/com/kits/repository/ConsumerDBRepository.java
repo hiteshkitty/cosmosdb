@@ -31,9 +31,10 @@ public interface ConsumerDBRepository extends CosmosRepository<Consumer, String>
 			+ "where c.topicName = @topicName\n"
 			+ "and c.processingOrder in (\"dead-letter\", \"MAIN\")\n"
 			+ "and c.partitionNumber = @partitionNumber \n"
+			+ "and c.consumerAppId = @consumerTopic \n"
 			+ "and c[\"offset\"] >=  @minOffset  \n"
 			+ "and c[\"offset\"] <= @maxOffset \n"
 			+ " order by c.partitionNumber")
-	List<MessageProcessed> getAllOffsetProcessed(String topicName, int partitionNumber, int minOffset, int maxOffset);
+	List<MessageProcessed> getAllOffsetProcessed(String topicName, String consumerTopic, int partitionNumber, int minOffset, int maxOffset);
 
 }

@@ -1,8 +1,5 @@
 package com.kits.cosmos.dto;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import lombok.Builder;
 import lombok.Data;
 
@@ -14,5 +11,4 @@ public class AggregateConsumerResponse {
 	private int retries;
 	private int deadLetter;
 	private int pending;
-	private List<PendingTopicDetails> pendingTopicDetails = new ArrayList<>();
 }

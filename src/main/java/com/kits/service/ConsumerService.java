@@ -53,10 +53,10 @@ public class ConsumerService {
 		return list;
 	}
 
-	public List<MessageProcessed> getAllProcessedMessage(String topicName, int partitionNumber,  int minOffset, int maxOffset) {
+	public List<MessageProcessed> getAllProcessedMessage(String topicName, String consumerTopic, int partitionNumber,  int minOffset, int maxOffset) {
 		List<MessageProcessed> list = new ArrayList<>();
 
-		list = consumerDBRepository.getAllOffsetProcessed(topicName, partitionNumber, minOffset, maxOffset);
+		list = consumerDBRepository.getAllOffsetProcessed(topicName, consumerTopic, partitionNumber, minOffset, maxOffset);
 
 		return list;
 	}

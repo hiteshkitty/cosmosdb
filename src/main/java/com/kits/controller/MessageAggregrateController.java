@@ -77,8 +77,8 @@ public class MessageAggregrateController {
 
 	}
 	
-	@PostMapping("/getpendingmessages/topicname/{topicName}")
-	public ResponseEntity<Map<Integer, List<Integer>> > getAllPendingMessages(@PathVariable String topicName,
+	@PostMapping("/getpendingmessages/topicname/{topicName}/consumertopic/{consumerTopic}")
+	public ResponseEntity<Map<Integer, List<Integer>> > getAllPendingMessages(@PathVariable String topicName, @PathVariable String consumerTopic,
 			@RequestBody DateRangeRequest request) throws ParseException {
 		try {
 			validateDateRangeRequest(request);
@@ -90,7 +90,7 @@ public class MessageAggregrateController {
 		Long startTime = sdf.parse(request.getStartDate() + " " + request.getStartTime()).getTime();
 		Long endTime = sdf.parse(request.getEndDate() + " " + request.getEndTime()).getTime();
 
-		Map<Integer, List<Integer>>  response = aggregrateService.getAllPendingMessages(topicName, startTime, endTime);
+		Map<Integer, List<Integer>>  response = aggregrateService.getAllPendingMessages(topicName, consumerTopic, startTime, endTime);
 		return new ResponseEntity<Map<Integer, List<Integer>> >(response, HttpStatus.OK);
 	}
 	private void validateDateRangeRequest(DateRangeRequest request) throws Exception {

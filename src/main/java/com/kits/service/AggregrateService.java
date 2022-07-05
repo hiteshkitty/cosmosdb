@@ -49,7 +49,7 @@ public class AggregrateService {
 		return response;
 	}
 
-	public Map<Integer, List<Integer>> getAllPendingMessages(String topicName, Long startTime, Long endTime) {
+	public Map<Integer, List<Integer>> getAllPendingMessages(String topicName, String consumerTopic, Long startTime, Long endTime) {
 		List<MessageProcessed> producedMessages = producerService.getAllProcessedMessage(topicName, startTime, endTime);
 		log.debug("produced messages: " + producedMessages);
 		Map<Integer, List<Integer>> producedMsgMap = convertToMap(producedMessages);
@@ -58,10 +58,11 @@ public class AggregrateService {
 
 		for (Map.Entry<Integer, List<Integer>> entry : producedMsgMap.entrySet()) {
 			log.debug("Key = " + entry.getKey() + ", Value = " + entry.getValue());
-			Optional<Integer> min = entry.getValue().stream().min(Comparator.naturalOrder());
-			Optional<Integer> max = entry.getValue().stream().max(Comparator.naturalOrder());
+			  Integer var =  entry.getValue().stream().min(Integer::compare).get();
+			Optional<Integer> min = entry.getValue().stream().min(Comparator.comparing(Integer::valueOf));
+			Optional<Integer> max = entry.getValue().stream().max(Comparator.comparing(Integer::valueOf));
 
-			List<MessageProcessed> consumedMessages = consumerService.getAllProcessedMessage(topicName, entry.getKey(),
+			List<MessageProcessed> consumedMessages = consumerService.getAllProcessedMessage(topicName, consumerTopic, entry.getKey(),
 					min.get(), max.get());
 			Map<Integer, List<Integer>> map = convertToMap(consumedMessages);
 			consumedMsgMap.putAll(map);
@@ -74,18 +75,6 @@ public class AggregrateService {
 		return response;
 	}
 
-//	private void compareMaps(Map<Integer, List<Integer>> producedMsgMap, Map<Integer, List<Integer>> consumedMsgMap) {
-//
-//		for (Map.Entry<Integer, List<Integer>> entry : producedMsgMap.entrySet()) {
-//			if (consumedMsgMap.containsKey(entry.getKey())) {
-//				List<Integer> missedMsgList = compareList(entry.getValue(), consumedMsgMap.get(entry.getKey()));
-//				log.debug("missed msg for partition: " + entry.getKey() + " are " + missedMsgList);
-//
-//			}
-//		}
-//
-//	}
-
 	private Map<Integer, List<Integer>> compareMaps(Map<Integer, List<Integer>> producedMsgMap,
 			Map<Integer, List<Integer>> consumedMsgMap) {
 		Map<Integer, List<Integer>> responseMap = new HashMap<>();
@@ -95,6 +84,8 @@ public class AggregrateService {
 				List<Integer> missedMsgList = compareList(entry.getValue(), consumedMsgMap.get(entry.getKey()));
 				log.debug("missed msg for partition: " + entry.getKey() + " are " + missedMsgList);
 				responseMap.put(entry.getKey(), missedMsgList);
+			} else {
+				responseMap.put(entry.getKey(), entry.getValue());
 			}
 		}
 
@@ -220,8 +211,7 @@ public class AggregrateService {
 			AggregateConsumerResponse res = AggregateConsumerResponse.builder().appId(entry.getKey())
 					.consumed(entry.getValue().getConsumed()).retries(entry.getValue().getRetries())
 					.deadLetter(entry.getValue().getDeadLetter()).pending(prodMsgCount - entry.getValue().getConsumed())
-//					.pendingTopicDetails(pendingTopicDetailsList)
-					.pendingTopicDetails(entry.getValue().getPendingTopicDetails()).build();
+					.build();
 			agrCntResp.getConsumer().add(res);
 		}
 		AggregateResponse response = new AggregateResponse();
@@ -239,7 +229,7 @@ public class AggregrateService {
 					.filter((value) -> value.getConsumerAppId().equalsIgnoreCase(appId))
 					.filter((value) -> (value.getPartitionNumber() == consumedMessage.getPartitionNumber()))
 					.collect(Collectors.toList());
-			consumerMap.get(appId).getPendingTopicDetails().addAll(pendingMsgList);
+			consumerMap.get(appId);
 		}
 
 	}
@@ -263,7 +253,7 @@ public class AggregrateService {
 				}
 			} else {
 				consumerMap.put(appId, AggregateConsumerResponse.builder().appId(appId)
-						.consumed(consumedMessage.getMessages()).pendingTopicDetails(new ArrayList<>()).build());
+						.consumed(consumedMessage.getMessages()).build());
 			}
 
 //			pendingMsgList = pendingMessagesList.stream().filter((value) -> value.getConsumerAppId().equalsIgnoreCase(appId)).filter((value) -> (value.getPartitionNumber() == consumedMessage.getPartitionNumber())).collect(Collectors.toList());
