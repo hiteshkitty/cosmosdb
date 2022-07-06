@@ -40,14 +40,14 @@ public class MessageAggregrateController {
 	@Autowired
 	private AggregrateService aggregrateService;
 
-	@GetMapping("/getmissedmessages/topicname/{topicName}/starttime/{startTime}/endtime/{endTime}")
-	public ResponseEntity<AggregateResponse> getAllMissedMessageCountsWithTime(@PathVariable String topicName,
-			@PathVariable String startTime, @PathVariable String endTime) {
-
-		AggregateResponse response = aggregrateService.getMissedMessagesWithLatestTime(topicName,
-				Long.valueOf(startTime), Long.valueOf(endTime));
-		return new ResponseEntity<AggregateResponse>(response, HttpStatus.OK);
-	}
+//	@GetMapping("/getmissedmessages/topicname/{topicName}/starttime/{startTime}/endtime/{endTime}")
+//	public ResponseEntity<AggregateResponse> getAllMissedMessageCountsWithTime(@PathVariable String topicName,
+//			@PathVariable String startTime, @PathVariable String endTime) {
+//
+//		AggregateResponse response = aggregrateService.getMissedMessagesWithLatestTime(topicName,
+//				Long.valueOf(startTime), Long.valueOf(endTime));
+//		return new ResponseEntity<AggregateResponse>(response, HttpStatus.OK);
+//	}
 
 	@PostMapping("/getmissedmessages/topicname/{topicName}")
 	public ResponseEntity<AggregateResponse> getAllMissedMessageCountsWithTime(@PathVariable String topicName,
@@ -146,36 +146,36 @@ public class MessageAggregrateController {
 		return flag;
 	}
 	
-	private boolean checkDateFormat1(DateRangeRequest request) throws Exception {
-		boolean flag = true;
-//		String dateRegex = "\\d{1,2}/d{1,2}/\\d{4}";
-		String dateRegex = "^([12][0-9][0-9][0-9]-[0-2][0-9]-[0-2][0-9])";
-//		String timeRegex = "^(?:[01]\\d|2[0123]):(?:[012345]\\d) ([AaPp][Mm])*";
-		String timeRegex = "^([0-2][0-9]:[0-5][0-9])";
-
-		checkFormat(request.getStartDate(), dateRegex);
-		checkFormat(request.getEndDate(), dateRegex);
-		checkFormat(request.getStartTime(), timeRegex);
-		checkFormat(request.getEndTime(), timeRegex);
-
-		return flag;
-	}
-	
-	public static void main(String[] args) throws Exception {
-		MessageAggregrateController con = new MessageAggregrateController();
-		DateRangeRequest request = new DateRangeRequest();
-		request.setStartDate("11-12-1970");
-		request.setStartTime("12:12 AM");
-		request.setEndDate("12-12-1971");
-		request.setEndTime("03:15 PM");
-//		con.validateDateRangeRequest(request);
-		System.out.println("fff");
-
-		request.setStartDate("1970-12-11");
-		request.setStartTime("12:12");
-		request.setEndDate("1970-12-12");
-		request.setEndTime("03:15");
-		con.checkDateFormat1(request);
-		System.out.println("hhh");
-	}
+//	private boolean checkDateFormat1(DateRangeRequest request) throws Exception {
+//		boolean flag = true;
+////		String dateRegex = "\\d{1,2}/d{1,2}/\\d{4}";
+//		String dateRegex = "^([12][0-9][0-9][0-9]-[0-2][0-9]-[0-2][0-9])";
+////		String timeRegex = "^(?:[01]\\d|2[0123]):(?:[012345]\\d) ([AaPp][Mm])*";
+//		String timeRegex = "^([0-2][0-9]:[0-5][0-9])";
+//
+//		checkFormat(request.getStartDate(), dateRegex);
+//		checkFormat(request.getEndDate(), dateRegex);
+//		checkFormat(request.getStartTime(), timeRegex);
+//		checkFormat(request.getEndTime(), timeRegex);
+//
+//		return flag;
+//	}
+//	
+//	public static void main(String[] args) throws Exception {
+//		MessageAggregrateController con = new MessageAggregrateController();
+//		DateRangeRequest request = new DateRangeRequest();
+//		request.setStartDate("11-12-1970");
+//		request.setStartTime("12:12 AM");
+//		request.setEndDate("12-12-1971");
+//		request.setEndTime("03:15 PM");
+////		con.validateDateRangeRequest(request);
+//		System.out.println("fff");
+//
+//		request.setStartDate("1970-12-11");
+//		request.setStartTime("12:12");
+//		request.setEndDate("1970-12-12");
+//		request.setEndTime("03:15");
+//		con.checkDateFormat1(request);
+//		System.out.println("hhh");
+//	}
 }
