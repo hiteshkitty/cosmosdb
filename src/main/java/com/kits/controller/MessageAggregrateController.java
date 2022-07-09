@@ -2,7 +2,6 @@ package com.kits.controller;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -15,8 +14,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,14 +26,22 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kits.cosmos.dto.AggregateResponse;
 import com.kits.cosmos.dto.DateRangeRequest;
+import com.kits.cosmos.dto.HttpStatusConstants;
 import com.kits.cosmos.dto.ProducerResponse;
+import com.kits.cosmos.dto.SwaggerConstants;
 import com.kits.service.AggregrateService;
 
-import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.servers.Server;
 
 @RestController
 @RequestMapping("/api/v1/aggregrate")
-@Api(value = "Producer APIs", tags = "Operations pertaining to performing CRUD operations for a Producer")
+@OpenAPIDefinition(servers = {
+		@Server(url = "/api/v1/aggregrate") }, info = @Info(version = SwaggerConstants.MSG_VERSION_1, title = SwaggerConstants.TITLE))
 public class MessageAggregrateController {
 
 	Logger LOGGER = LoggerFactory.getLogger(MessageAggregrateController.class);
@@ -40,16 +49,11 @@ public class MessageAggregrateController {
 	@Autowired
 	private AggregrateService aggregrateService;
 
-//	@GetMapping("/getmissedmessages/topicname/{topicName}/starttime/{startTime}/endtime/{endTime}")
-//	public ResponseEntity<AggregateResponse> getAllMissedMessageCountsWithTime(@PathVariable String topicName,
-//			@PathVariable String startTime, @PathVariable String endTime) {
-//
-//		AggregateResponse response = aggregrateService.getMissedMessagesWithLatestTime(topicName,
-//				Long.valueOf(startTime), Long.valueOf(endTime));
-//		return new ResponseEntity<AggregateResponse>(response, HttpStatus.OK);
-//	}
-
-	@PostMapping("/getmissedmessages/topicname/{topicName}")
+	@Operation(summary = SwaggerConstants.GET_ALL_MISSED_MSG_SUMMARY, description = SwaggerConstants.GET_ALL_MISSED_MSG_SUMMARY)
+	@ApiResponses(value = { @ApiResponse(responseCode = HttpStatusConstants.OK, description = SwaggerConstants.SUCCESS),
+			@ApiResponse(responseCode = HttpStatusConstants.BAD_REQUEST, description = SwaggerConstants.BAD_REQUEST) })
+	@PatchMapping("getmissedmessages/topicname/{topicName}")
+	@PostMapping("getmissedmessages/topicname/{topicName}")
 	public ResponseEntity<AggregateResponse> getAllMissedMessageCountsWithTime(@PathVariable String topicName,
 			@RequestBody DateRangeRequest request) throws ParseException {
 		try {
@@ -66,8 +70,12 @@ public class MessageAggregrateController {
 		return new ResponseEntity<AggregateResponse>(response, HttpStatus.OK);
 	}
 
-	@GetMapping("getalltopics")
-	public ResponseEntity<ProducerResponse> getProducers() {
+	@Operation(summary = SwaggerConstants.GET_ALL_DISTINCT_TOPIC_SUMMARY, description = SwaggerConstants.GET_ALL_DISTINCT_TOPIC_SUMMARY)
+	@ApiResponses(value = { @ApiResponse(responseCode = HttpStatusConstants.OK, description = SwaggerConstants.SUCCESS),
+			@ApiResponse(responseCode = HttpStatusConstants.BAD_REQUEST, description = SwaggerConstants.BAD_REQUEST) })
+	@PatchMapping("getalltopics")
+	@GetMapping(path = "getalltopics", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+	public ResponseEntity<ProducerResponse> getProducers() throws Exception {
 		HttpHeaders responseHeaders = new HttpHeaders();
 		responseHeaders.add("ContentType", "application/json");
 
@@ -76,10 +84,14 @@ public class MessageAggregrateController {
 		return new ResponseEntity<ProducerResponse>(producerResponse, responseHeaders, HttpStatus.OK);
 
 	}
-	
+
+	@Operation(summary = SwaggerConstants.GET_ALL_PENDING_MSG_SUMMARY, description = SwaggerConstants.GET_ALL_PENDING_MSG_SUMMARY)
+	@ApiResponses(value = { @ApiResponse(responseCode = HttpStatusConstants.OK, description = SwaggerConstants.SUCCESS),
+			@ApiResponse(responseCode = HttpStatusConstants.BAD_REQUEST, description = SwaggerConstants.BAD_REQUEST) })
+	@PatchMapping("/getpendingmessages/topicname/{topicName}/consumertopic/{consumerTopic}")
 	@PostMapping("/getpendingmessages/topicname/{topicName}/consumertopic/{consumerTopic}")
-	public ResponseEntity<Map<Integer, List<Integer>> > getAllPendingMessages(@PathVariable String topicName, @PathVariable String consumerTopic,
-			@RequestBody DateRangeRequest request) throws ParseException {
+	public ResponseEntity<Map<Integer, List<Integer>>> getAllPendingMessages(@PathVariable String topicName,
+			@PathVariable String consumerTopic, @RequestBody DateRangeRequest request) throws ParseException {
 		try {
 			validateDateRangeRequest(request);
 		} catch (Exception ex) {
@@ -90,9 +102,11 @@ public class MessageAggregrateController {
 		Long startTime = sdf.parse(request.getStartDate() + " " + request.getStartTime()).getTime();
 		Long endTime = sdf.parse(request.getEndDate() + " " + request.getEndTime()).getTime();
 
-		Map<Integer, List<Integer>>  response = aggregrateService.getAllPendingMessages(topicName, consumerTopic, startTime, endTime);
-		return new ResponseEntity<Map<Integer, List<Integer>> >(response, HttpStatus.OK);
+		Map<Integer, List<Integer>> response = aggregrateService.getAllPendingMessages(topicName, consumerTopic,
+				startTime, endTime);
+		return new ResponseEntity<Map<Integer, List<Integer>>>(response, HttpStatus.OK);
 	}
+
 	private void validateDateRangeRequest(DateRangeRequest request) throws Exception {
 
 		try {
@@ -129,7 +143,6 @@ public class MessageAggregrateController {
 			throw new Exception("Bad request, please check dates are in dd-MMM-yyyy format and time in HH:mm:ss");
 		}
 	}
-	
 
 	private boolean checkDateFormat(DateRangeRequest request) throws Exception {
 		boolean flag = true;
@@ -145,37 +158,5 @@ public class MessageAggregrateController {
 
 		return flag;
 	}
-	
-//	private boolean checkDateFormat1(DateRangeRequest request) throws Exception {
-//		boolean flag = true;
-////		String dateRegex = "\\d{1,2}/d{1,2}/\\d{4}";
-//		String dateRegex = "^([12][0-9][0-9][0-9]-[0-2][0-9]-[0-2][0-9])";
-////		String timeRegex = "^(?:[01]\\d|2[0123]):(?:[012345]\\d) ([AaPp][Mm])*";
-//		String timeRegex = "^([0-2][0-9]:[0-5][0-9])";
-//
-//		checkFormat(request.getStartDate(), dateRegex);
-//		checkFormat(request.getEndDate(), dateRegex);
-//		checkFormat(request.getStartTime(), timeRegex);
-//		checkFormat(request.getEndTime(), timeRegex);
-//
-//		return flag;
-//	}
-//	
-//	public static void main(String[] args) throws Exception {
-//		MessageAggregrateController con = new MessageAggregrateController();
-//		DateRangeRequest request = new DateRangeRequest();
-//		request.setStartDate("11-12-1970");
-//		request.setStartTime("12:12 AM");
-//		request.setEndDate("12-12-1971");
-//		request.setEndTime("03:15 PM");
-////		con.validateDateRangeRequest(request);
-//		System.out.println("fff");
-//
-//		request.setStartDate("1970-12-11");
-//		request.setStartTime("12:12");
-//		request.setEndDate("1970-12-12");
-//		request.setEndTime("03:15");
-//		con.checkDateFormat1(request);
-//		System.out.println("hhh");
-//	}
+
 }
