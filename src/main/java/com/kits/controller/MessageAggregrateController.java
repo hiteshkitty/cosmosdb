@@ -52,7 +52,6 @@ public class MessageAggregrateController {
 	@Operation(summary = SwaggerConstants.GET_ALL_MISSED_MSG_SUMMARY, description = SwaggerConstants.GET_ALL_MISSED_MSG_SUMMARY)
 	@ApiResponses(value = { @ApiResponse(responseCode = HttpStatusConstants.OK, description = SwaggerConstants.SUCCESS),
 			@ApiResponse(responseCode = HttpStatusConstants.BAD_REQUEST, description = SwaggerConstants.BAD_REQUEST) })
-	@PatchMapping("getmissedmessages/topicname/{topicName}")
 	@PostMapping("getmissedmessages/topicname/{topicName}")
 	public ResponseEntity<AggregateResponse> getAllMissedMessageCountsWithTime(@PathVariable String topicName,
 			@RequestBody DateRangeRequest request) throws ParseException {
@@ -73,7 +72,6 @@ public class MessageAggregrateController {
 	@Operation(summary = SwaggerConstants.GET_ALL_DISTINCT_TOPIC_SUMMARY, description = SwaggerConstants.GET_ALL_DISTINCT_TOPIC_SUMMARY)
 	@ApiResponses(value = { @ApiResponse(responseCode = HttpStatusConstants.OK, description = SwaggerConstants.SUCCESS),
 			@ApiResponse(responseCode = HttpStatusConstants.BAD_REQUEST, description = SwaggerConstants.BAD_REQUEST) })
-	@PatchMapping("getalltopics")
 	@GetMapping(path = "getalltopics", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public ResponseEntity<ProducerResponse> getProducers() throws Exception {
 		HttpHeaders responseHeaders = new HttpHeaders();
@@ -88,7 +86,6 @@ public class MessageAggregrateController {
 	@Operation(summary = SwaggerConstants.GET_ALL_PENDING_MSG_SUMMARY, description = SwaggerConstants.GET_ALL_PENDING_MSG_SUMMARY)
 	@ApiResponses(value = { @ApiResponse(responseCode = HttpStatusConstants.OK, description = SwaggerConstants.SUCCESS),
 			@ApiResponse(responseCode = HttpStatusConstants.BAD_REQUEST, description = SwaggerConstants.BAD_REQUEST) })
-	@PatchMapping("/getpendingmessages/topicname/{topicName}/consumertopic/{consumerTopic}")
 	@PostMapping("/getpendingmessages/topicname/{topicName}/consumertopic/{consumerTopic}")
 	public ResponseEntity<Map<Integer, List<Integer>>> getAllPendingMessages(@PathVariable String topicName,
 			@PathVariable String consumerTopic, @RequestBody DateRangeRequest request) throws ParseException {
